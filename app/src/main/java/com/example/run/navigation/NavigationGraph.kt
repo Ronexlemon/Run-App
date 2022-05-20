@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import com.example.run.R
 import com.example.run.appviewmodel.AppViewModel
 import com.example.run.uis.MainApp
+import com.example.run.uis.SaveScreens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.time.ExperimentalTime
@@ -38,8 +39,17 @@ fun NavigationGraph(navcontroller: NavHostController,scope:CoroutineScope,viewMo
      composable(route = Screen.App.route){
          AppScreen(scope=scope,navcontroller = navcontroller,viewmodel = viewModel)
      }
+     composable(route=Screen.Save.route){
+         SaveScreen(viewModel=viewModel)
+     }
  }
 
+}
+
+@ExperimentalTime
+@Composable
+fun SaveScreen(viewModel: AppViewModel) {
+    SaveScreens(viewModel =viewModel )
 }
 
 @ExperimentalTime

@@ -13,15 +13,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.run.apprepository.AppRepository
+import com.example.run.appviewmodel.AppViewFactory
 import com.example.run.appviewmodel.AppViewModel
 import com.example.run.navigation.NavigationGraph
+import com.example.run.roomdb.AppDao
 import com.example.run.ui.theme.RunTheme
 import com.example.run.uis.MainApp
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 @ExperimentalTime
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private val viewmodel:AppViewModel  by viewModels()
+ @Inject
+ lateinit var  dao:AppDao
+    private val viewmodel:AppViewModel  by viewModels{
+        AppViewFactory(AppRepository(dao))
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
