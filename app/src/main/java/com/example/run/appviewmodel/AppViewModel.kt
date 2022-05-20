@@ -4,15 +4,25 @@ package com.example.run.appviewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.run.apprepository.AppRepository
+import com.example.run.roomdb.TimeStore
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-
+@HiltViewModel
 @ExperimentalTime
-class AppViewModel : ViewModel() {
+class AppViewModel
+ @Inject constructor(private val repo:AppRepository)   : ViewModel() {
+    var getAll :LiveData<List<TimeStore>> = repo.getAllData()
 
+   var week = Calendar.getInstance(TimeZone.getTimeZone("GMT")).get(Calendar.DAY_OF_WEEK)
     private var time: Duration = Duration.ZERO
     private lateinit var timer: Timer
 
@@ -50,5 +60,19 @@ class AppViewModel : ViewModel() {
         pause()
         time = Duration.ZERO
         updateTimeStates()
+    }
+    fun insert(){
+        val hour = hours
+        val minute = minutes
+        val sec = seconds
+        viewModelScope.launch {
+            repo.insertData(TimeStore(hours=hour,id=0, minutes = minute, seconds = sec))
+        }
+
+    }
+    fun delete(){
+        viewModelScope.launch {
+            repo.deleteData(seconds)
+        }
     }
 }
